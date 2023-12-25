@@ -19,6 +19,15 @@ la_ow_syscall.ko:
 	@echo "Building la_ow_syscall driver..."
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules
 
+$(obj)/ksym_addr.h: System.map
+	@$(kecho) '  GEN     $@'
+	$(Q)grep ' sys_call_table$$' $< >/dev/null
+	$(Q)grep ' kallsyms_lookup_name$$' $< >/dev/null
+	$(Q)echo "#define LAOWSYS_SYS_CALL_TABLE_ADDR 0x$$(grep ' sys_call_table$$' $< | cut -d ' ' -f 1)" > $@
+	$(Q)echo "#define LAOWSYS_KALLSYMS_LOOKUP_NAME_ADDR 0x$$(grep ' kallsyms_lookup_name$$' $< | cut -d ' ' -f 1)" >> $@
+
+$(obj)/$(la_ow_syscall-y): $(obj)/ksym_addr.h
+
 install-all: install
 install:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules_install

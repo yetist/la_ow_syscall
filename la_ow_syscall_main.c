@@ -254,6 +254,7 @@ static int __init oldsyscall_start(void)
 	unsigned long (*p_kallsyms_lookup_name)(const char *name);
 	int rc = find_kallsyms_lookup_name();
 	if (rc < 0) {
+	    pr_debug("did not found the kallsyms\n");
 		return rc;
 	}
 	p_kallsyms_lookup_name = (void *)kallsyms_lookup_name_addr;
