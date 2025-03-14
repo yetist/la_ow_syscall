@@ -24,6 +24,7 @@ MODULE_VERSION("0.1.0");
 
 #define __ARCH_WANT_SET_GET_RLIMIT
 #define __ARCH_WANT_NEW_STAT
+#define __ARCH_WANT_SET_GET_RLIMIT
 #undef __SYSCALL
 #define __SYSCALL(nr, call) [nr] = (#call),
 
@@ -32,7 +33,7 @@ const char *sys_call_table_name[__NR_syscalls] = {
 #include <asm/unistd.h>
 };
 
-#ifndef __loongarch64
+#ifndef __loongarch_lp64
 #error This Linux kernel module is only supported on LoongArch
 #endif
 
@@ -47,8 +48,6 @@ static struct {
 } syscall_to_replace[] = {
 	{ __NR_fstat, sys_newfstat },
 	{ __NR_newfstatat, sys_newfstatat },
-	{ __NR_getrlimit, NULL },
-	{ __NR_setrlimit, NULL },
 	{ __NR_rt_sigprocmask, sys_rt_sigprocmask },
 	{ __NR_rt_sigpending, sys_rt_sigpending },
 	{ __NR_rt_sigtimedwait, sys_rt_sigtimedwait },
